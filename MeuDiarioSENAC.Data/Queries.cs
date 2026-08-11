@@ -19,11 +19,14 @@ public class Queries
             cmd.Parameters.AddWithValue("@conteudo", conteudo);
             cmd.ExecuteNonQuery();
 
-            conexao.Close();
         }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
+        }
+        finally
+        {
+            conexao.Close();
         }
     }
 
