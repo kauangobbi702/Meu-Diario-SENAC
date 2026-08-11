@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/MeuDiarioSENAC.ConsoleApp/">
+    <Project Path="MeuDiarioSENAC.ConsoleApp/MeuDiarioSENAC.ConsoleApp.csproj" />
+  </Folder>
+  <Project Path="MeuDiarioSENAC.Classes/MeuDiarioSENAC.Classes.csproj" />
+  <Project Path="MeuDiarioSENAC.Data/MeuDiarioSENAC.Data.csproj" />
+</Solution>
