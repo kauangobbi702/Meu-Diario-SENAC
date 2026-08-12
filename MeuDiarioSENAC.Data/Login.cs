@@ -7,7 +7,7 @@ public class Login
     {
         try
         {
-            using (var conexao = new Conexao().Conectar())
+            using (var conexao = new MeuDiarioSENACContext().Conectar())
             {
                 conexao.Open();
                 string sql = "INSERT INTO tb_usuario (nome_usuario, email_usuario, senha_usuario) VALUES (@nome, @email, @senha)";
@@ -42,7 +42,7 @@ public class Login
 
         try
         {
-            using (var conexao = new Conexao().Conectar())
+            using (var conexao = new MeuDiarioSENACContext().Conectar())
             {
                 conexao.Open();
 

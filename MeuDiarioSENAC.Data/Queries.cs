@@ -3,7 +3,7 @@ using SolutionDiarioSenac.Classes;
 
 public class Queries
 {
-    MySqlConnection conexao = new Conexao().Conectar();
+    MySqlConnection conexao = new MeuDiarioSENACContext().Conectar();
 
     public void AdicionarRegistro(int idUsuario, string titulo, string conteudo)
     {
