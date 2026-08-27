@@ -3,21 +3,13 @@ using SolutionDiarioSenac.Classes;
 
 public class Queries
 {
-    MySqlConnection conexao = new MeuDiarioSENACContext().Conectar();
+    private MeuDiarioSENACContext conexao = new MeuDiarioSENACContext();
 
     public void AdicionarRegistro(int idUsuario, string titulo, string conteudo)
     {
         try
         {
-            conexao.Open();
-
-            string sql = "INSERT INTO tb_registros (id_usuario, titulo, conteudo) VALUES (@id_usuario, @titulo, @conteudo)";
-
-            MySqlCommand cmd = new MySqlCommand(sql, conexao);
-            cmd.Parameters.AddWithValue("@id_usuario", idUsuario);
-            cmd.Parameters.AddWithValue("@titulo", titulo);
-            cmd.Parameters.AddWithValue("@conteudo", conteudo);
-            cmd.ExecuteNonQuery();
+            
 
         }
         catch (Exception e)
@@ -26,7 +18,7 @@ public class Queries
         }
         finally
         {
-            conexao.Close();
+            
         }
     }
 
@@ -34,37 +26,7 @@ public class Queries
     {
         try
         {
-            conexao.Open();
-
-            string sql = "SELECT * FROM tb_registros WHERE id_usuario = @id_usuario ORDER BY data DESC";
-
-            MySqlCommand cmd = new MySqlCommand(sql, conexao);
-            cmd.Parameters.AddWithValue("@id_usuario", idUsuario);
-            MySqlDataReader reader = cmd.ExecuteReader();
-
-            List <Registro> registros = new();
-
-
-            while (reader.Read())
-            {
-                Registro registro = new Registro()
-                {
-                    Titulo = Convert.ToString(reader["titulo"]),
-                    Data = DateOnly.FromDateTime(reader.GetDateTime("data")),
-                    Conteudo = Convert.ToString(reader["conteudo"])
-                };
-                registros.Add(registro);
-            }
-
-            if (registros.Count == 0)
-            {
-                Console.WriteLine("Nenhum registro foi encontrado para a data informada");
-                Console.WriteLine("Pressione qualquer tecla para continuar...");
-                Console.ReadKey();
-                return null;
-            }
-
-            return registros;
+            return null;
         }
         catch (Exception e)
         {
@@ -73,7 +35,7 @@ public class Queries
         }
         finally
         {
-            conexao.Close();
+           
         }
     }
 
@@ -81,40 +43,7 @@ public class Queries
     {
         try
         {
-            conexao.Open();
-
-            string sql = "SELECT * FROM tb_registros WHERE id_usuario = @id_usuario AND data = @data";
-
-            MySqlCommand cmd = new MySqlCommand(sql, conexao);
-            cmd.Parameters.AddWithValue("@id_usuario", idUsuario);
-            cmd.Parameters.AddWithValue("@data", data.ToString("yyyy-MM-dd"));
-
-            MySqlDataReader reader = cmd.ExecuteReader();
-
-            List <Registro> registros = new();
-
-
-            while (reader.Read())
-            {
-                Registro registro = new Registro()
-                {
-                    Titulo = Convert.ToString(reader["titulo"]),
-                    Data = DateOnly.FromDateTime(reader.GetDateTime("data")),
-                    Conteudo = Convert.ToString(reader["conteudo"])
-                };
-                registros.Add(registro);
-            }
-            
-
-            if (registros.Count == 0)
-            {
-                Console.WriteLine("Nenhum registro foi encontrado para a data informada");
-                Console.WriteLine("Pressione qualquer tecla para continuar...");
-                Console.ReadKey();
-                return null;
-            }            
-
-            return registros;
+            return null;
         }
         catch (Exception e)
         {
@@ -123,7 +52,7 @@ public class Queries
         }
         finally
         {
-            conexao.Close();
+            
         }
     }
 
