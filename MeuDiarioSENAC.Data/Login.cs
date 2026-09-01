@@ -1,4 +1,4 @@
-using MySql.Data.MySqlClient;
+using System.Linq;
 using SolutionDiarioSenac.Classes;
 
 public class Login
@@ -9,7 +9,22 @@ public class Login
     {
         try
         {
-            
+            bool emailJaExiste = conexao.Usuarios.Any(u => u.Email == email);
+
+            if (emailJaExiste)
+            {
+                return ResultadoCadastro.EmailDuplicado;
+            }
+
+            Usuario novoUsuario = new Usuario
+            {
+                Nome = nome,
+                Email = email,
+                Senha = senha
+            };
+
+            conexao.Usuarios.Add(novoUsuario);
+            conexao.SaveChanges();
 
             return ResultadoCadastro.Sucesso;
         }
@@ -26,6 +41,19 @@ public class Login
 
         try
         {
+            Usuario usuario = conexao.Usuarios.FirstOrDefault(u => u.Email == email);
+
+            if (usuario == null)
+            {
+                return ResultadoLogin.EmailNaoEncontrado;
+            }
+
+            if (usuario.Senha != senha)
+            {
+                return ResultadoLogin.SenhaIncorreta;
+            }
+
+            usuarioLogado = usuario;
             return ResultadoLogin.Sucesso;
         }
         catch (Exception e)
