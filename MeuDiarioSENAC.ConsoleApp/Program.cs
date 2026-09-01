@@ -1,7 +1,7 @@
-﻿using SolutionDiarioSenac.Classes;
+using SolutionDiarioSenac.Classes;
 
 Login login = new();
-Queries queries = new Queries();
+RegistroDAO registroDAO = new RegistroDAO();
 
 
 
@@ -69,7 +69,7 @@ while (true)
                                     break;
                                 }
 
-                                Console.WriteLine("Digite o que você gostaria de registrar:");
+                                Console.WriteLine("\nDigite o que você gostaria de registrar:");
 
                                 string conteudo = Console.ReadLine() ?? "";
                                 if (string.IsNullOrWhiteSpace(conteudo))
@@ -80,38 +80,73 @@ while (true)
                                     break;
                                 }
 
-                                queries.AdicionarRegistro(usuarioLogado.ID, titulo, conteudo);
+                                Registro novoRegistro = new Registro
+                                {
+                                    UsuarioId = usuarioLogado.Id,
+                                    Titulo = titulo,
+                                    Conteudo = conteudo,
+                                    Data = DateOnly.FromDateTime(DateTime.Now)
+                                };
+
+                                registroDAO.AdicionarRegistro(novoRegistro);
 
                                 Console.WriteLine("\nRegistro adicionado com sucesso!");
                                 Console.WriteLine("Pressione qualquer tecla para continuar...");
                                 Console.ReadKey();
                                 break;
 
-                                case "2":
-                                
+                            case "2":
+
                                 try
                                 {
+                                    List<Registro> registros = registroDAO.ListarRegistros(usuarioLogado.Id);
 
-                                    foreach (var registro in queries.ListarRegistros(usuarioLogado.ID))
+                                    if (registros == null || registros.Count == 0)
                                     {
-                                        Console.WriteLine("++++++++++++++++++++++++++++++++++++\n");;
-                                        Console.WriteLine($"Título: {registro.Titulo}");
+                                        Console.WriteLine("\nVocê ainda não possui registros.");
+                                        Console.WriteLine("Pressione qualquer tecla para retornar...");
+                                        Console.ReadKey();
+                                        break;
+                                    }
+
+                                    int indiceListagem = 1;
+                                    foreach (var registro in registros)
+                                    {
+                                        Console.WriteLine("++++++++++++++++++++++++++++++++++++\n");
+                                        Console.WriteLine($"{indiceListagem} - Título: {registro.Titulo}");
                                         Console.WriteLine($"Data: {registro.Data.ToString("dd/MM/yyyy")}");
                                         Console.WriteLine($"Registro: {registro.Conteudo}\n");
-                                    } 
+                                        indiceListagem++;
+                                    }
 
-                                    Console.WriteLine("Pressione qualquer tecla para retornar...");
-                                    Console.ReadKey();
+                                    Console.WriteLine("Digite o número do registro que deseja editar, ou pressione Enter para voltar:");
+                                    string opcaoEdicaoListagem = Console.ReadLine() ?? "";
+
+                                    if (!string.IsNullOrWhiteSpace(opcaoEdicaoListagem))
+                                    {
+                                        if (int.TryParse(opcaoEdicaoListagem, out int numeroSelecionadoListagem)
+                                            && numeroSelecionadoListagem >= 1
+                                            && numeroSelecionadoListagem <= registros.Count)
+                                        {
+                                            EditarRegistroInterativo(registroDAO, registros[numeroSelecionadoListagem - 1]);
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("\nNúmero inválido.");
+                                            Console.WriteLine("Pressione qualquer tecla para retornar...");
+                                            Console.ReadKey();
+                                        }
+                                    }
                                 }
                                 catch (Exception e)
                                 {
                                     Console.WriteLine("Erro ao listar registros: " + e.Message);
                                 }
-                                
+
                             break;
 
                             case "3":
-                                Console.WriteLine("Digite a data do registro (dd/mm/aaaa)");
+                                Console.WriteLine("\nDigite a data do registro (dd/mm/aaaa)");
                                 string dataPesquisa = Console.ReadLine() ?? "";
                                 if (string.IsNullOrWhiteSpace(dataPesquisa))
                                 {
@@ -126,20 +161,38 @@ while (true)
                                 {
                                     DateOnly data = DateOnly.ParseExact(dataPesquisa, "dd/MM/yyyy");
 
-                                    List<Registro> registrosData = queries.BuscarRegistroData(usuarioLogado.ID, data);
+                                    List<Registro> registrosData = registroDAO.BuscarRegistroData(usuarioLogado.Id, data);
 
-                                    if (registrosData != null)
+                                    if (registrosData != null && registrosData.Count > 0)
                                     {
+                                        int indiceData = 1;
                                         foreach (var registro in registrosData)
                                         {
                                             Console.WriteLine("++++++++++++++++++++++++++++++++++++\n");
-                                            Console.WriteLine($"Título: {registro.Titulo}");
+                                            Console.WriteLine($"{indiceData} - Título: {registro.Titulo}");
                                             Console.WriteLine($"Data: {registro.Data.ToString("dd/MM/yyyy")}");
                                             Console.WriteLine($"Registro: {registro.Conteudo}\n");
+                                            indiceData++;
                                         }
 
-                                        Console.WriteLine("Pressione qualquer tecla para retornar...");
-                                        Console.ReadKey();
+                                        Console.WriteLine("Digite o número do registro que deseja editar, ou pressione Enter para voltar:");
+                                        string opcaoEdicaoData = Console.ReadLine() ?? "";
+
+                                        if (!string.IsNullOrWhiteSpace(opcaoEdicaoData))
+                                        {
+                                            if (int.TryParse(opcaoEdicaoData, out int numeroSelecionadoData)
+                                                && numeroSelecionadoData >= 1
+                                                && numeroSelecionadoData <= registrosData.Count)
+                                            {
+                                                EditarRegistroInterativo(registroDAO, registrosData[numeroSelecionadoData - 1]);
+                                            }
+                                            else
+                                            {
+                                                Console.WriteLine("\nNúmero inválido.");
+                                                Console.WriteLine("Pressione qualquer tecla para retornar...");
+                                                Console.ReadKey();
+                                            }
+                                        }
                                     }
                                     else
                                     {
@@ -182,7 +235,7 @@ while (true)
                     break;
 
                 case ResultadoLogin.SenhaIncorreta:
-                    Console.WriteLine("\nSenha incorreta.");
+                    Console.WriteLine("\nE-mail ou senha incorretos.");
                     Console.WriteLine("Pressione qualquer tecla para continuar...");
                     Console.ReadKey();
                     break;
@@ -260,4 +313,27 @@ while (true)
             Console.ReadKey();
         break;
     }
+}
+
+static void EditarRegistroInterativo(RegistroDAO registroDAO, Registro registro)
+{
+    Console.WriteLine("\nDigite o novo título (deixe em branco para manter o atual):");
+    string novoTitulo = Console.ReadLine() ?? "";
+    if (string.IsNullOrWhiteSpace(novoTitulo))
+    {
+        novoTitulo = registro.Titulo;
+    }
+
+    Console.WriteLine("\nDigite o novo conteúdo (deixe em branco para manter o atual):");
+    string novoConteudo = Console.ReadLine() ?? "";
+    if (string.IsNullOrWhiteSpace(novoConteudo))
+    {
+        novoConteudo = registro.Conteudo;
+    }
+
+    registroDAO.EditarRegistro(registro.Id, novoTitulo, novoConteudo);
+
+    Console.WriteLine("\nRegistro atualizado com sucesso!");
+    Console.WriteLine("Pressione qualquer tecla para continuar...");
+    Console.ReadKey();
 }

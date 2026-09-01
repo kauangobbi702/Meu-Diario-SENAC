@@ -1,8 +1,10 @@
-﻿namespace SolutionDiarioSenac.Classes;
+namespace SolutionDiarioSenac.Classes;
 
 public class Usuario
 {
-    public int ID { get; set; }
+    public int Id { get; set; }
     public string Nome { get; set; }
     public string Email { get; set; }
+    public string Senha { get; set; }
+    public List<Registro> Registros { get; set; }
 }
