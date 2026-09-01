@@ -1,7 +1,7 @@
 using System.Linq;
 
 namespace SolutionDiarioSenac.Classes;
-public class RegistroDAO
+public class RegistroDAL
 {
     private MeuDiarioSENACContext conexao = new MeuDiarioSENACContext();
 

@@ -1,7 +1,7 @@
 using SolutionDiarioSenac.Classes;
 
 Login login = new();
-RegistroDAO registroDAO = new RegistroDAO();
+RegistroDAL registroDAO = new RegistroDAL();
 
 
 
@@ -315,7 +315,7 @@ while (true)
     }
 }
 
-static void EditarRegistroInterativo(RegistroDAO registroDAO, Registro registro)
+static void EditarRegistroInterativo(RegistroDAL registroDAL, Registro registro)
 {
     Console.WriteLine("\nDigite o novo título (deixe em branco para manter o atual):");
     string novoTitulo = Console.ReadLine() ?? "";
@@ -331,7 +331,7 @@ static void EditarRegistroInterativo(RegistroDAO registroDAO, Registro registro)
         novoConteudo = registro.Conteudo;
     }
 
-    registroDAO.EditarRegistro(registro.Id, novoTitulo, novoConteudo);
+    registroDAL.EditarRegistro(registro.Id, novoTitulo, novoConteudo);
 
     Console.WriteLine("\nRegistro atualizado com sucesso!");
     Console.WriteLine("Pressione qualquer tecla para continuar...");
