@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\MeuDiarioSENAC.Classes\MeuDiarioSENAC.Classes.csproj" />
+    <ProjectReference Include="..\MeuDiarioSENAC.Model\MeuDiarioSENAC.Model.csproj" />
   </ItemGroup>
 
   <ItemGroup>

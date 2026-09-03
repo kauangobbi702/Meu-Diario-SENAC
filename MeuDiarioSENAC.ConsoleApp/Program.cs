@@ -1,7 +1,9 @@
 using SolutionDiarioSenac.Classes;
+using MeuDiarioSENAC.Business;
 
 Login login = new();
 RegistroDAL registroDAO = new RegistroDAL();
+UsuarioBusiness usuarioBusiness = new();
 
 
 
@@ -20,22 +22,19 @@ while (true)
         case "1":
             Console.WriteLine("Digite o seu e-mail:");
             string emailUsuario = Console.ReadLine() ?? "";
-            if (string.IsNullOrWhiteSpace(emailUsuario))
+            while (!usuarioBusiness.EmailFoiInformado(emailUsuario))
             {
-                Console.WriteLine("\nO e-mail não pode estar vazio.");
-                Console.WriteLine("Pressione qualquer tecla para continuar...");
-                Console.ReadKey();
-                break;
+                Console.WriteLine("\nDigite o seu e-mail:");
+                emailUsuario = Console.ReadLine() ?? "";
             }
+            
 
             Console.WriteLine("Digite a sua senha:");
             string senhaUsuario = Console.ReadLine() ?? "";
-            if (string.IsNullOrWhiteSpace(senhaUsuario))
+            while (!usuarioBusiness.SenhaFoiInformada(senhaUsuario))
             {
-                Console.WriteLine("\nA senha não pode estar vazio.");
-                Console.WriteLine("Pressione qualquer tecla para continuar...");
-                Console.ReadKey();
-                break;
+                Console.WriteLine("\nDigite a sua senha:");
+                senhaUsuario = Console.ReadLine() ?? "";
             }
 
             ResultadoLogin resultadoL = login.Autenticar(emailUsuario, senhaUsuario, out Usuario usuarioLogado);
@@ -250,34 +249,33 @@ while (true)
         break;
 
         case "2":
-            Console.WriteLine("Digite o seu nome:");
+            Console.WriteLine("\nDigite o seu nome:");
             string nomeCadastro = Console.ReadLine() ?? "";
-            if (string.IsNullOrWhiteSpace(nomeCadastro))
+            while (!usuarioBusiness.NomeFoiInformado(nomeCadastro))
             {
-                Console.WriteLine("\nO nome não pode estar vazio.");
-                Console.WriteLine("Pressione qualquer tecla para continuar...");
-                Console.ReadKey();
-                break;
+                Console.WriteLine("\nDigite o seu nome:");
+                nomeCadastro = Console.ReadLine() ?? "";
             }
 
-            Console.WriteLine("Digite o seu e-mail:");
+            Console.WriteLine("\nDigite o seu e-mail:");
             string emailCadastro = Console.ReadLine() ?? "";
-            if (string.IsNullOrWhiteSpace(emailCadastro))
+            while (!usuarioBusiness.EmailFoiInformado(emailCadastro))
             {
-                Console.WriteLine("O e-mail não pode estar vazio.");
-                Console.WriteLine("Pressione qualquer tecla para continuar...");
-                Console.ReadKey();
-                break;
+                Console.WriteLine("\nDigite o seu e-mail:");
+                emailCadastro = Console.ReadLine() ?? "";
             }
 
-            Console.WriteLine("Digite a sua senha:");
+            Console.WriteLine("\nDigite a sua senha:");
             string senhaCadastro = Console.ReadLine() ?? "";
-            if (string.IsNullOrWhiteSpace(senhaCadastro))
+            while (!usuarioBusiness.SenhaFoiInformada(senhaCadastro))
             {
-                Console.WriteLine("\nA senha não pode estar vazia.");
-                Console.WriteLine("Pressione qualquer tecla para continuar...");
-                Console.ReadKey();
-                break;
+                Console.WriteLine("\nDigite a sua senha:");
+                senhaCadastro = Console.ReadLine() ?? "";
+            }
+            while (!usuarioBusiness.SenhaMuitoCurta(senhaCadastro))
+            {
+                Console.WriteLine("\nDigite a sua senha:");
+                senhaCadastro = Console.ReadLine() ?? "";
             }
 
             ResultadoCadastro resultadoC = login.CadastrarUsuario(nomeCadastro, emailCadastro, senhaCadastro);
