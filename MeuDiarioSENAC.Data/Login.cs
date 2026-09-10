@@ -1,5 +1,8 @@
+namespace MeuDiarioSENAC.Data;
+
 using System.Linq;
-using SolutionDiarioSenac.Classes;
+
+using MeuDiarioSENAC.Classes;
 
 public class Login
 {

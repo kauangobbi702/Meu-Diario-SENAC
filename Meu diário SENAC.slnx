@@ -5,4 +5,5 @@
   <Project Path="MeuDiarioSENAC.Business/MeuDiarioSENAC.Business.csproj" />
   <Project Path="MeuDiarioSENAC.Data/MeuDiarioSENAC.Data.csproj" />
   <Project Path="MeuDiarioSENAC.Model/MeuDiarioSENAC.Model.csproj" />
+  <Project Path="MeuDiarioSENAC.Service/MeuDiarioSENAC.Service.csproj" />
 </Solution>

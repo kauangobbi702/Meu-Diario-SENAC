@@ -1,5 +1,7 @@
+namespace MeuDiarioSENAC.Data;
+
 using Microsoft.EntityFrameworkCore;
-using SolutionDiarioSenac.Classes;
+using MeuDiarioSENAC.Classes;
 
 public class MeuDiarioSENACContext : DbContext
 {

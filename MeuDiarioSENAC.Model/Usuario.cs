@@ -1,4 +1,4 @@
-namespace SolutionDiarioSenac.Classes;
+namespace MeuDiarioSENAC.Classes;
 
 public class Usuario
 {

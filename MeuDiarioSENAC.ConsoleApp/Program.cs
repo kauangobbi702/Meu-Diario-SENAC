@@ -1,9 +1,11 @@
-using SolutionDiarioSenac.Classes;
-using MeuDiarioSENAC.Business;
+using MeuDiarioSENAC.Classes;
+using MeuDiarioSENAC.Service;
+using MeuDiarioSENAC.Data;
 
-Login login = new();
-RegistroDAL registroDAO = new RegistroDAL();
-UsuarioBusiness usuarioBusiness = new();
+UsuarioService usuarioService = new UsuarioService();
+RegistroService registroService = new RegistroService();
+RegistroContext registroContext = new RegistroContext();
+
 
 
 
@@ -22,7 +24,7 @@ while (true)
         case "1":
             Console.WriteLine("Digite o seu e-mail:");
             string emailUsuario = Console.ReadLine() ?? "";
-            while (!usuarioBusiness.EmailFoiInformado(emailUsuario))
+            while (!usuarioService.EmailFoiInformado(emailUsuario))
             {
                 Console.WriteLine("\nDigite o seu e-mail:");
                 emailUsuario = Console.ReadLine() ?? "";
@@ -31,13 +33,13 @@ while (true)
 
             Console.WriteLine("Digite a sua senha:");
             string senhaUsuario = Console.ReadLine() ?? "";
-            while (!usuarioBusiness.SenhaFoiInformada(senhaUsuario))
+            while (!usuarioService.SenhaFoiInformada(senhaUsuario))
             {
                 Console.WriteLine("\nDigite a sua senha:");
                 senhaUsuario = Console.ReadLine() ?? "";
             }
 
-            ResultadoLogin resultadoL = login.Autenticar(emailUsuario, senhaUsuario, out Usuario usuarioLogado);
+            ResultadoLogin resultadoL = usuarioService.AutenticarUsuario(emailUsuario, senhaUsuario, out Usuario usuarioLogado);
 
             switch (resultadoL)
             {
@@ -60,34 +62,24 @@ while (true)
                                 Console.WriteLine("Digite o título do registro:");
 
                                 string titulo = Console.ReadLine() ?? "";
-                                if (string.IsNullOrWhiteSpace(titulo))
+                                while (!registroService.TituloFoiInformado(titulo) || !registroService.TituloMuitoCurto(titulo) || !registroService.TituloMuitoLongo(titulo))
                                 {
-                                    Console.WriteLine("\nO título não pode estar vazio.");
-                                    Console.WriteLine("Pressione qualquer tecla para continuar...");
-                                    Console.ReadKey();
-                                    break;
+                                    Console.WriteLine("Digite o título do registro:");
+                                    titulo = Console.ReadLine() ?? "";
                                 }
 
                                 Console.WriteLine("\nDigite o que você gostaria de registrar:");
 
                                 string conteudo = Console.ReadLine() ?? "";
-                                if (string.IsNullOrWhiteSpace(conteudo))
+                                while (!registroService.ConteudoFoiInformado(conteudo) || !registroService.ConteudoMuitoCurto(conteudo) || !registroService.ConteudoMuitoLongo(conteudo))
                                 {
-                                    Console.WriteLine("\nO conteúdo não pode estar vazio.");
-                                    Console.WriteLine("Pressione qualquer tecla para continuar...");
-                                    Console.ReadKey();
-                                    break;
+                                    Console.WriteLine("\nDigite o que você gostaria de registrar:");
+                                    conteudo = Console.ReadLine() ?? "";
                                 }
 
-                                Registro novoRegistro = new Registro
-                                {
-                                    UsuarioId = usuarioLogado.Id,
-                                    Titulo = titulo,
-                                    Conteudo = conteudo,
-                                    Data = DateOnly.FromDateTime(DateTime.Now)
-                                };
+                                Registro novoRegistro = registroService.CriarRegistro(titulo, conteudo, usuarioLogado.Id);
 
-                                registroDAO.AdicionarRegistro(novoRegistro);
+                                registroContext.AdicionarRegistro(novoRegistro);
 
                                 Console.WriteLine("\nRegistro adicionado com sucesso!");
                                 Console.WriteLine("Pressione qualquer tecla para continuar...");
@@ -98,15 +90,9 @@ while (true)
 
                                 try
                                 {
-                                    List<Registro> registros = registroDAO.ListarRegistros(usuarioLogado.Id);
+                                    List<Registro> registros = registroService.ListarRegistros(usuarioLogado.Id);
 
-                                    if (registros == null || registros.Count == 0)
-                                    {
-                                        Console.WriteLine("\nVocê ainda não possui registros.");
-                                        Console.WriteLine("Pressione qualquer tecla para retornar...");
-                                        Console.ReadKey();
-                                        break;
-                                    }
+                                    if (registroService.ListaRegistroVazia(registros)) break;
 
                                     int indiceListagem = 1;
                                     foreach (var registro in registros)
@@ -127,7 +113,7 @@ while (true)
                                             && numeroSelecionadoListagem >= 1
                                             && numeroSelecionadoListagem <= registros.Count)
                                         {
-                                            EditarRegistroInterativo(registroDAO, registros[numeroSelecionadoListagem - 1]);
+                                            registroService.EditarRegistroInterativo(registroContext, registros[numeroSelecionadoListagem - 1]);
                                         }
                                         else
                                         {
@@ -160,7 +146,7 @@ while (true)
                                 {
                                     DateOnly data = DateOnly.ParseExact(dataPesquisa, "dd/MM/yyyy");
 
-                                    List<Registro> registrosData = registroDAO.BuscarRegistroData(usuarioLogado.Id, data);
+                                    List<Registro> registrosData = registroContext.BuscarRegistroData(usuarioLogado.Id, data);
 
                                     if (registrosData != null && registrosData.Count > 0)
                                     {
@@ -183,7 +169,7 @@ while (true)
                                                 && numeroSelecionadoData >= 1
                                                 && numeroSelecionadoData <= registrosData.Count)
                                             {
-                                                EditarRegistroInterativo(registroDAO, registrosData[numeroSelecionadoData - 1]);
+                                                registroService.EditarRegistroInterativo(registroContext, registrosData[numeroSelecionadoData - 1]);
                                             }
                                             else
                                             {
@@ -251,7 +237,7 @@ while (true)
         case "2":
             Console.WriteLine("\nDigite o seu nome:");
             string nomeCadastro = Console.ReadLine() ?? "";
-            while (!usuarioBusiness.NomeFoiInformado(nomeCadastro))
+            while (!usuarioService.NomeFoiInformado(nomeCadastro))
             {
                 Console.WriteLine("\nDigite o seu nome:");
                 nomeCadastro = Console.ReadLine() ?? "";
@@ -259,7 +245,7 @@ while (true)
 
             Console.WriteLine("\nDigite o seu e-mail:");
             string emailCadastro = Console.ReadLine() ?? "";
-            while (!usuarioBusiness.EmailFoiInformado(emailCadastro))
+            while (!usuarioService.EmailFoiInformado(emailCadastro))
             {
                 Console.WriteLine("\nDigite o seu e-mail:");
                 emailCadastro = Console.ReadLine() ?? "";
@@ -267,18 +253,18 @@ while (true)
 
             Console.WriteLine("\nDigite a sua senha:");
             string senhaCadastro = Console.ReadLine() ?? "";
-            while (!usuarioBusiness.SenhaFoiInformada(senhaCadastro))
+            while (!usuarioService.SenhaFoiInformada(senhaCadastro))
             {
                 Console.WriteLine("\nDigite a sua senha:");
                 senhaCadastro = Console.ReadLine() ?? "";
             }
-            while (!usuarioBusiness.SenhaMuitoCurta(senhaCadastro))
+            while (!usuarioService.SenhaMuitoCurta(senhaCadastro))
             {
                 Console.WriteLine("\nDigite a sua senha:");
                 senhaCadastro = Console.ReadLine() ?? "";
             }
 
-            ResultadoCadastro resultadoC = login.CadastrarUsuario(nomeCadastro, emailCadastro, senhaCadastro);
+            ResultadoCadastro resultadoC = usuarioService.CadastrarUsuario(nomeCadastro, emailCadastro, senhaCadastro);
 
             switch (resultadoC)
             {
@@ -313,25 +299,4 @@ while (true)
     }
 }
 
-static void EditarRegistroInterativo(RegistroDAL registroDAL, Registro registro)
-{
-    Console.WriteLine("\nDigite o novo título (deixe em branco para manter o atual):");
-    string novoTitulo = Console.ReadLine() ?? "";
-    if (string.IsNullOrWhiteSpace(novoTitulo))
-    {
-        novoTitulo = registro.Titulo;
-    }
 
-    Console.WriteLine("\nDigite o novo conteúdo (deixe em branco para manter o atual):");
-    string novoConteudo = Console.ReadLine() ?? "";
-    if (string.IsNullOrWhiteSpace(novoConteudo))
-    {
-        novoConteudo = registro.Conteudo;
-    }
-
-    registroDAL.EditarRegistro(registro.Id, novoTitulo, novoConteudo);
-
-    Console.WriteLine("\nRegistro atualizado com sucesso!");
-    Console.WriteLine("Pressione qualquer tecla para continuar...");
-    Console.ReadKey();
-}
