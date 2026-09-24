@@ -7,6 +7,7 @@ public class Registro
     public string Conteudo { get; set; }
     public int UsuarioId { get; set; }
     public Usuario Usuario { get; set; }
+    
 
     public Registro CriarRegistro(string titulo, string conteudo, int usuarioId)
     {

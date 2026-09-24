@@ -3,6 +3,8 @@ using System.Linq;
 namespace MeuDiarioSENAC.Data;
 
 using MeuDiarioSENAC.Classes;
+using Microsoft.EntityFrameworkCore;
+
 public class RegistroContext
 {
     private MeuDiarioSENACContext conexao = new MeuDiarioSENACContext();
@@ -25,6 +27,8 @@ public class RegistroContext
         try
         {
             return conexao.Registros
+                .AsNoTracking()
+                .Include(r => r.Usuario)
                 .Where(r => r.UsuarioId == idUsuario)
                 .OrderByDescending(r => r.Data)
                 .ToList();

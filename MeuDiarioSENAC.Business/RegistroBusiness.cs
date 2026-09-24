@@ -22,7 +22,7 @@ public class RegistroBusiness
         }
     }
 
-    public bool TituloMuitoCurto(string titulo)
+    public bool TituloNaoEhMuitoCurto(string titulo)
     {
         try
         {
@@ -42,7 +42,7 @@ public class RegistroBusiness
         }
     }
 
-    public bool TituloMuitoLongo(string titulo)
+    public bool TituloNaoEhMuitoLongo(string titulo)
     {
         try
         {
@@ -81,7 +81,7 @@ public class RegistroBusiness
         }
     }
 
-    public bool ConteudoMuitoCurto(string conteudo)
+    public bool ConteudoNaoEhMuitoCurto(string conteudo)
     {
         try
         {
@@ -100,7 +100,7 @@ public class RegistroBusiness
         }
     }
     
-    public bool ConteudoMuitoLongo(string conteudo)
+    public bool ConteudoNaoEhMuitoLongo(string conteudo)
     {
         try
         {

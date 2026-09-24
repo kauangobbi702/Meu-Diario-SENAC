@@ -14,15 +14,15 @@ public class RegistroService
 
     public bool TituloFoiInformado(string titulo) => _registroBusiness.TituloFoiInformado(titulo);
 
-    public bool TituloMuitoCurto(string titulo) => _registroBusiness.TituloMuitoCurto(titulo);
+    public bool TituloNaoEhMuitoCurto(string titulo) => _registroBusiness.TituloNaoEhMuitoCurto(titulo);
 
-    public bool TituloMuitoLongo(string titulo) => _registroBusiness.TituloMuitoLongo(titulo);
+    public bool TituloNaoEhMuitoLongo(string titulo) => _registroBusiness.TituloNaoEhMuitoLongo(titulo);
 
     public bool ConteudoFoiInformado(string conteudo) => _registroBusiness.ConteudoFoiInformado(conteudo);
 
-    public bool ConteudoMuitoCurto(string conteudo) => _registroBusiness.ConteudoMuitoCurto(conteudo);
+    public bool ConteudoNaoEhMuitoCurto(string conteudo) => _registroBusiness.ConteudoNaoEhMuitoCurto(conteudo);
 
-    public bool ConteudoMuitoLongo(string conteudo) => _registroBusiness.ConteudoMuitoLongo(conteudo);
+    public bool ConteudoNaoEhMuitoLongo(string conteudo) => _registroBusiness.ConteudoNaoEhMuitoLongo(conteudo);
 
     public void AdicionarRegistro(Registro registro) => _registroContext.AdicionarRegistro(registro);
 
@@ -31,11 +31,11 @@ public class RegistroService
         try
         {
             if (_registroBusiness.TituloFoiInformado(titulo) &&
-                _registroBusiness.TituloMuitoCurto(titulo) &&
-                _registroBusiness.TituloMuitoLongo(titulo) &&
+                _registroBusiness.TituloNaoEhMuitoCurto(titulo) &&
+                _registroBusiness.TituloNaoEhMuitoLongo(titulo) &&
                 _registroBusiness.ConteudoFoiInformado(conteudo) &&
-                _registroBusiness.ConteudoMuitoCurto(conteudo) &&
-                _registroBusiness.ConteudoMuitoLongo(conteudo))
+                _registroBusiness.ConteudoNaoEhMuitoCurto(conteudo) &&
+                _registroBusiness.ConteudoNaoEhMuitoLongo(conteudo))
             {
                 Registro registro = new Registro();
                 return registro.CriarRegistro(titulo, conteudo, usuarioId);
@@ -60,37 +60,7 @@ public class RegistroService
 
     public void RemoverRegistro(Registro registro) => _registroContext.RemoverRegistro(registro);
 
-    public void EditarRegistroInterativo(RegistroContext registroDAL, Registro registro)
-    {
-        Console.WriteLine("\nDigite o novo título (deixe em branco para manter o atual):");
-        string novoTitulo = Console.ReadLine() ?? "";
-        if (string.IsNullOrEmpty(novoTitulo))
-        {
-            novoTitulo = registro.Titulo;
-        }
-        else if (TituloMuitoCurto(novoTitulo) && TituloMuitoLongo(novoTitulo))
-        {
-            registro.Titulo = novoTitulo;
-        }
- 
-
-        Console.WriteLine("\nDigite o novo conteúdo (deixe em branco para manter o atual):");
-        string novoConteudo = Console.ReadLine() ?? "";
-        if (string.IsNullOrEmpty(novoConteudo))
-        {
-            novoConteudo = registro.Conteudo;
-        }
-        else if (ConteudoMuitoCurto(novoConteudo) && ConteudoMuitoLongo(novoConteudo))
-        {
-            registro.Conteudo = novoConteudo;
-        }
-
-        registroDAL.EditarRegistro(registro.Id, novoTitulo, novoConteudo);
-
-        Console.WriteLine("\nRegistro atualizado com sucesso!");
-        Console.WriteLine("Pressione qualquer tecla para continuar...");
-        Console.ReadKey();
-    }
+    public void EditarRegistro(int idRegistro, string novoTitulo, string novoConteudo) => _registroContext.EditarRegistro(idRegistro, novoTitulo, novoConteudo);
 
     public bool ListaRegistroVazia(List<Registro> registros) => _registroBusiness.ListaRegistroVazia(registros);
 }
