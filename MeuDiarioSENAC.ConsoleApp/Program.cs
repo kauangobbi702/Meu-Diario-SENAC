@@ -62,7 +62,7 @@ while (true)
                                 Console.WriteLine("Digite o título do registro:");
 
                                 string titulo = Console.ReadLine() ?? "";
-                                while (!registroService.TituloFoiInformado(titulo) || !registroService.TituloMuitoCurto(titulo) || !registroService.TituloMuitoLongo(titulo))
+                                while (!registroService.TituloFoiInformado(titulo) || !registroService.TituloNaoEhMuitoCurto(titulo) || !registroService.TituloNaoEhMuitoLongo(titulo))
                                 {
                                     Console.WriteLine("Digite o título do registro:");
                                     titulo = Console.ReadLine() ?? "";
@@ -71,7 +71,7 @@ while (true)
                                 Console.WriteLine("\nDigite o que você gostaria de registrar:");
 
                                 string conteudo = Console.ReadLine() ?? "";
-                                while (!registroService.ConteudoFoiInformado(conteudo) || !registroService.ConteudoMuitoCurto(conteudo) || !registroService.ConteudoMuitoLongo(conteudo))
+                                while (!registroService.ConteudoFoiInformado(conteudo) || !registroService.ConteudoNaoEhMuitoCurto(conteudo) || !registroService.ConteudoNaoEhMuitoLongo(conteudo))
                                 {
                                     Console.WriteLine("\nDigite o que você gostaria de registrar:");
                                     conteudo = Console.ReadLine() ?? "";
@@ -113,7 +113,46 @@ while (true)
                                             && numeroSelecionadoListagem >= 1
                                             && numeroSelecionadoListagem <= registros.Count)
                                         {
-                                            registroService.EditarRegistroInterativo(registroContext, registros[numeroSelecionadoListagem - 1]);
+                                            Console.WriteLine("\nDigite o novo título (deixe em branco para manter o atual):");
+                                            string novoTitulo = Console.ReadLine() ?? "";
+                                            if (string.IsNullOrEmpty(novoTitulo))
+                                            {
+                                                Console.WriteLine("\nDigite o novo conteúdo (deixe em branco para manter o atual):");
+                                                string novoConteudo = Console.ReadLine() ?? "";
+                                                if (string.IsNullOrEmpty(novoConteudo))
+                                                {
+                                                    break;
+                                                }
+                                                else if (registroService.ConteudoNaoEhMuitoCurto(novoConteudo) && registroService.ConteudoNaoEhMuitoLongo(novoConteudo))
+                                                {
+                                                    registroContext.EditarRegistro(registros[numeroSelecionadoListagem - 1].Id, registros[numeroSelecionadoListagem - 1].Titulo, novoConteudo);
+
+                                                    Console.WriteLine("\nRegistro atualizado com sucesso!");
+                                                    Console.WriteLine("Pressione qualquer tecla para continuar...");
+                                                    Console.ReadKey();
+                                                }
+                                            }
+                                            else if (registroService.TituloNaoEhMuitoCurto(novoTitulo) && registroService.TituloNaoEhMuitoLongo(novoTitulo))
+                                            {
+                                                Console.WriteLine("\nDigite o novo conteúdo (deixe em branco para manter o atual):");
+                                                string novoConteudo = Console.ReadLine() ?? "";
+                                                if (string.IsNullOrEmpty(novoConteudo))
+                                                {
+                                                    registroContext.EditarRegistro(registros[numeroSelecionadoListagem - 1].Id, novoTitulo, registros[numeroSelecionadoListagem - 1].Conteudo);
+
+                                                    Console.WriteLine("\nRegistro atualizado com sucesso!");
+                                                    Console.WriteLine("Pressione qualquer tecla para continuar...");
+                                                    Console.ReadKey();
+                                                }
+                                                else if (registroService.ConteudoNaoEhMuitoCurto(novoConteudo) && registroService.ConteudoNaoEhMuitoLongo(novoConteudo))
+                                                {
+                                                    registroContext.EditarRegistro(registros[numeroSelecionadoListagem - 1].Id, novoTitulo, novoConteudo);
+
+                                                    Console.WriteLine("\nRegistro atualizado com sucesso!");
+                                                    Console.WriteLine("Pressione qualquer tecla para continuar...");
+                                                    Console.ReadKey();
+                                                }
+                                            }
                                         }
                                         else
                                         {
@@ -161,15 +200,50 @@ while (true)
                                         }
 
                                         Console.WriteLine("Digite o número do registro que deseja editar, ou pressione Enter para voltar:");
-                                        string opcaoEdicaoData = Console.ReadLine() ?? "";
+                                        string opcaoEdicaoListagem = Console.ReadLine() ?? "";
 
-                                        if (!string.IsNullOrWhiteSpace(opcaoEdicaoData))
+                                        if (!string.IsNullOrWhiteSpace(opcaoEdicaoListagem))
                                         {
-                                            if (int.TryParse(opcaoEdicaoData, out int numeroSelecionadoData)
-                                                && numeroSelecionadoData >= 1
-                                                && numeroSelecionadoData <= registrosData.Count)
+                                            if (int.TryParse(opcaoEdicaoListagem, out int numeroSelecionadoListagem)
+                                                && numeroSelecionadoListagem >= 1
+                                                && numeroSelecionadoListagem <= registrosData.Count)
                                             {
-                                                registroService.EditarRegistroInterativo(registroContext, registrosData[numeroSelecionadoData - 1]);
+                                                Console.WriteLine("\nDigite o novo título (deixe em branco para manter o atual):");
+                                                string novoTitulo = Console.ReadLine() ?? "";
+                                                if (string.IsNullOrEmpty(novoTitulo))
+                                                {
+                                                    Console.WriteLine("\nDigite o novo conteúdo (deixe em branco para manter o atual):");
+                                                    string novoConteudo = Console.ReadLine() ?? "";
+                                                    if (string.IsNullOrEmpty(novoConteudo))
+                                                    {
+                                                        break;
+                                                    }
+                                                    else if (registroService.ConteudoNaoEhMuitoCurto(novoConteudo) && registroService.ConteudoNaoEhMuitoLongo(novoConteudo))
+                                                    {
+                                                        registroContext.EditarRegistro(registrosData[numeroSelecionadoListagem - 1].Id, registrosData[numeroSelecionadoListagem - 1].Titulo, novoConteudo);
+
+                                                        Console.WriteLine("\nRegistro atualizado com sucesso!");
+                                                        Console.WriteLine("Pressione qualquer tecla para continuar...");
+                                                        Console.ReadKey();
+                                                    }
+                                                }
+                                                else if (registroService.TituloNaoEhMuitoCurto(novoTitulo) && registroService.TituloNaoEhMuitoLongo(novoTitulo))
+                                                {
+                                                    Console.WriteLine("\nDigite o novo conteúdo (deixe em branco para manter o atual):");
+                                                    string novoConteudo = Console.ReadLine() ?? "";
+                                                    if (string.IsNullOrEmpty(novoConteudo))
+                                                    {
+                                                        break;
+                                                    }
+                                                    else if (registroService.ConteudoNaoEhMuitoCurto(novoConteudo) && registroService.ConteudoNaoEhMuitoLongo(novoConteudo))
+                                                    {
+                                                        registroContext.EditarRegistro(registrosData[numeroSelecionadoListagem - 1].Id, novoTitulo, novoConteudo);
+
+                                                        Console.WriteLine("\nRegistro atualizado com sucesso!");
+                                                        Console.WriteLine("Pressione qualquer tecla para continuar...");
+                                                        Console.ReadKey();
+                                                    }
+                                                }
                                             }
                                             else
                                             {
